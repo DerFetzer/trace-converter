@@ -26,6 +26,7 @@ impl Sample {
         for val in &self.signal_values {
             write!(&mut json, "\"{}\": {}, ", val.0, val.1).unwrap();
         }
+        json = json.trim_end_matches(", ").to_string();
         json.push_str("}}");
         json
     }
@@ -145,8 +146,8 @@ mod tests {
         let res = s.to_json();
 
         assert!(
-            res == "{\"timestamp\": 1.112, \"signal_values\": {\"signal2\": 3.14, \"signal1\": 42.42, }}" 
-                || res == "{\"timestamp\": 1.112, \"signal_values\": {\"signal1\": 42.42, \"signal2\": 3.14, }}"
+            res == "{\"timestamp\": 1.112, \"signal_values\": {\"signal2\": 3.14, \"signal1\": 42.42}}"
+                || res == "{\"timestamp\": 1.112, \"signal_values\": {\"signal1\": 42.42, \"signal2\": 3.14}}"
         )
     }
 }

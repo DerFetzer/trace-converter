@@ -1,6 +1,8 @@
 use crate::converter::TraceReader;
 use std::error::Error;
 use std::fs::File;
+use std::io::BufWriter;
+use std::io::Write;
 
 mod converter;
 
@@ -14,7 +16,19 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Open output file
     let output = File::create("traces/Recording_1.json")?;
 
-    todo!("Write samples as JSON to output");
+    // Write samples as JSON to output
+    let mut bw = BufWriter::new(output);
+
+    write!(
+        &mut bw,
+        "[{}]",
+        samples
+            .into_iter()
+            .map(|s| s.to_json())
+            .collect::<Vec<_>>()
+            .join(",")
+    )?;
+    bw.flush()?;
 
     Ok(())
 }
