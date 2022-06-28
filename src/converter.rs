@@ -26,6 +26,7 @@ impl Sample {
         for val in &self.signal_values {
             write!(&mut json, "\"{}\": {}, ", val.0, val.1).unwrap();
         }
+        // Remove trailing comma
         json = json.trim_end_matches(", ").to_string();
         json.push_str("}}");
         json
@@ -73,12 +74,14 @@ impl TraceReader {
         let first_line = lines.next().ok_or(TraceReaderError {
             message: "Line too short".to_string(),
         })?;
+        // Extract signal names from first line
         let signal_names: Vec<_> = first_line.split(';').skip(1).map(|s| s.trim()).collect();
 
         let mut samples = vec![];
 
         for line in lines {
             let mut split_line = line.split(';');
+            // Extract timestamp from line
             let ts = split_line
                 .next()
                 .ok_or(TraceReaderError {
@@ -88,6 +91,7 @@ impl TraceReader {
 
             let mut values = HashMap::new();
 
+            // Zip the splitted line parts with the signal names
             for (value, name) in split_line.zip(signal_names.iter()) {
                 if let Ok(parsed_value) = value.parse() {
                     values.insert(name.to_string(), parsed_value);
@@ -145,6 +149,7 @@ mod tests {
 
         let res = s.to_json();
 
+        // Since HashMap is not ordered singals are in arbitrary order
         assert!(
             res == "{\"timestamp\": 1.112, \"signal_values\": {\"signal2\": 3.14, \"signal1\": 42.42}}"
                 || res == "{\"timestamp\": 1.112, \"signal_values\": {\"signal1\": 42.42, \"signal2\": 3.14}}"
