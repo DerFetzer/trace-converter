@@ -18,13 +18,13 @@ impl Sample {
     ///     "timestamp": 1.112,
     ///     "signal_values": {
     ///         "signal1": 42.42,
-    ///         "signal2": 3.14,
+    ///         "signal2": 3.14
     ///     }
     /// }
     pub fn to_json(&self) -> String {
         let mut json = format!("{{\"timestamp\": {}, \"signal_values\": {{", self.timestamp);
-        for val in &self.signal_values {
-            write!(&mut json, "\"{}\": {}, ", val.0, val.1).unwrap();
+        for (name, value) in &self.signal_values {
+            write!(&mut json, "\"{}\": {}, ", name, value).unwrap();
         }
         // Remove trailing comma
         json = json.trim_end_matches(", ").to_string();
@@ -72,7 +72,7 @@ impl TraceReader {
         let mut lines = reader.lines().flatten();
 
         let first_line = lines.next().ok_or(TraceReaderError {
-            message: "Line too short".to_string(),
+            message: "File too short".to_string(),
         })?;
         // Extract signal names from first line
         let signal_names: Vec<_> = first_line.split(';').skip(1).map(|s| s.trim()).collect();
