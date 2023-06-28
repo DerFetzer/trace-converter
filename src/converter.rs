@@ -17,7 +17,7 @@ impl Sample {
     ///     "timestamp": 1.112,
     ///     "signal_values": {
     ///         "signal1": 42.42,
-    ///         "signal2": 3.14,
+    ///         "signal2": 3.14
     ///     }
     /// }
     pub fn to_json(&self) -> String {
@@ -88,7 +88,7 @@ mod tests {
 
         let res = s.to_json();
 
-        // Since HashMap is not ordered singals are in arbitrary order
+        // Since HashMap is not ordered signals are in arbitrary order
         assert!(
             res == "{\"timestamp\": 1.112, \"signal_values\": {\"signal2\": 3.14, \"signal1\": 42.42}}"
                 || res == "{\"timestamp\": 1.112, \"signal_values\": {\"signal1\": 42.42, \"signal2\": 3.14}}"
