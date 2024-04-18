@@ -69,7 +69,9 @@ impl TraceReader {
     pub fn read<T: Read>(reader: T) -> Result<Vec<Sample>, TraceReaderError> {
         let reader = BufReader::new(reader);
 
-        let mut lines = reader.lines().flatten();
+        // flatten is more intuitive but it can lead to an infinite loop
+        // https://rust-lang.github.io/rust-clippy/master/index.html#/lines_filter_map_ok
+        let mut lines = reader.lines().map_while(Result::ok);
 
         let first_line = lines.next().ok_or(TraceReaderError {
             message: "File too short".to_string(),
