@@ -115,8 +115,8 @@ mod tests {
     #[test]
     fn trace_reader_read() {
         let csv = "timeStamp;ParkFunc;AngleParkFunc\n\
-        3.83;65533.0;4093.0\n\
-        4.76;400.0; "
+                           3.83;65533.0;4093.0\n\
+                           4.76;400.0;"
             .to_string();
         let c = Cursor::new(csv);
 
@@ -143,6 +143,7 @@ mod tests {
             timestamp: 1.112,
             signal_values: HashMap::from([
                 ("signal1".to_string(), 42.42),
+                #[allow(clippy::approx_constant)]
                 ("signal2".to_string(), 3.14),
             ]),
         };
